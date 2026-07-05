@@ -17,11 +17,11 @@ export default function ESList({
   if (entrySheets.length === 0) {
     return (
       <div className="rounded-xl border-2 border-dashed border-slate-300 bg-white p-10 text-center">
-        <p className="text-slate-500 text-lg">
+        <p className="text-lg text-slate-500">
           📄 まだESは登録されていません
         </p>
 
-        <p className="text-sm text-slate-400 mt-2">
+        <p className="mt-2 text-sm text-slate-400">
           上のフォームから最初のESを作成しましょう。
         </p>
       </div>

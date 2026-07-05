@@ -34,57 +34,34 @@ export function useES(companyId: string) {
     try {
       const data = await fetchEntrySheets(companyId);
       setEntrySheets(data);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
     }
   }
 
   async function saveES() {
-    if (!title || !content) {
+    if (!title.trim() || !content.trim()) {
       alert("タイトルと内容を入力してください。");
       return;
     }
 
     try {
-      await saveEntrySheet(companyId, title, content);
+      if (isEditing && editingId) {
+        await updateEntrySheet(editingId, title, content);
 
-      setTitle("");
-      setContent("");
+        alert("更新しました！");
+      } else {
+        await saveEntrySheet(companyId, title, content);
 
-      await loadEntrySheets();
+        alert("保存しました！");
+      }
 
-      alert("保存しました！");
-    } catch (err) {
-      console.error(err);
-      alert("保存に失敗しました");
-    }
-  }
-function cancelEdit() {
-  setEditingId(null);
-  setIsEditing(false);
-
-  setTitle("");
-  setContent("");
-  setReviewResult("");
-}
-  async function updateES() {
-    if (!editingId) return;
-
-    try {
-      await updateEntrySheet(editingId, title, content);
-
-      setEditingId(null);
-      setIsEditing(false);
-
-      setTitle("");
-      setContent("");
+      cancelEdit();
 
       await loadEntrySheets();
-
-      alert("更新しました！");
-    } catch (err) {
-      console.error(err);
-      alert("更新に失敗しました");
+    } catch (error) {
+      console.error(error);
+      alert("保存に失敗しました。");
     }
   }
 
@@ -97,24 +74,40 @@ function cancelEdit() {
     setReviewResult(sheet.review_result ?? "");
 
     setIsEditing(true);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setIsEditing(false);
+
+    setTitle("");
+    setContent("");
+    setReviewResult("");
   }
 
   async function removeES(id: string) {
-    if (!confirm("削除しますか？")) return;
+    const ok = confirm("このESを削除しますか？");
+
+    if (!ok) return;
 
     try {
       await deleteEntrySheet(id);
 
       await loadEntrySheets();
-    } catch (err) {
-      console.error(err);
-      alert("削除に失敗しました");
+    } catch (error) {
+      console.error(error);
+      alert("削除できませんでした。");
     }
   }
 
   async function handleReview() {
-    if (!content) {
-      alert("ESを入力してください");
+    if (!content.trim()) {
+      alert("ES内容を入力してください。");
       return;
     }
 
@@ -130,9 +123,9 @@ function cancelEdit() {
 
         await loadEntrySheets();
       }
-    } catch (err) {
-      console.error(err);
-      alert("AI添削に失敗しました");
+    } catch (error) {
+      console.error(error);
+      alert("AI添削に失敗しました。");
     } finally {
       setLoadingReview(false);
     }
@@ -153,9 +146,10 @@ function cancelEdit() {
     isEditing,
 
     saveES,
-cancelEdit,
-startEdit,
-removeES,
-handleReview,
+    startEdit,
+    cancelEdit,
+    removeES,
+    handleReview,
+    loadEntrySheets,
   };
 }

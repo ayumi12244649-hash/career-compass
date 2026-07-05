@@ -2,242 +2,193 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
-import { supabase } from "@/lib/supabase";
+import type { Company } from "@/types/company";
+
+import {
+  fetchCompanies,
+  deleteCompany,
+} from "@/services/company.service";
+
 import CompanyModal from "@/app/components/CompanyModal";
-import StatusBadge from "./StatusBadge";
-
-type Company = {
-  id: string;
-  company_name: string;
-  industry: string;
-  status: string;
-  applied_date: string | null;
-  user_id: string;
-};
 
 export default function CompaniesPage() {
-  const router = useRouter();
-
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
-
-  const [openModal, setOpenModal] = useState(false);
-  const [editingCompany, setEditingCompany] =
-    useState<Company | null>(null);
-
-  const [userId, setUserId] = useState("");
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    initialize();
+    loadCompanies();
   }, []);
 
-  async function initialize() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      router.push("/login");
-      return;
-    }
-
-    setUserId(user.id);
-
-    await fetchCompanies(user.id);
-
-    setLoading(false);
-  }
-
-  async function fetchCompanies(uid: string) {
-    const { data, error } = await supabase
-      .from("companies")
-      .select("*")
-      .eq("user_id", uid)
-      .order("created_at", {
-        ascending: false,
-      });
-
-    if (error) {
+  async function loadCompanies() {
+    try {
+      const data = await fetchCompanies();
+      setCompanies(data);
+    } catch (error) {
       console.error(error);
-      return;
+      alert("企業一覧の取得に失敗しました。");
+    } finally {
+      setLoading(false);
     }
-
-    setCompanies(data ?? []);
   }
 
-  async function handleSaved() {
-    setOpenModal(false);
-    setEditingCompany(null);
-
-    await fetchCompanies(userId);
-  }
-
-  async function deleteCompany(id: string) {
+  async function handleDelete(id: string) {
     const ok = confirm("この企業を削除しますか？");
 
     if (!ok) return;
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) return;
-
-    const { error } = await supabase
-      .from("companies")
-      .delete()
-      .eq("id", id)
-      .eq("user_id", user.id);
-
-    if (error) {
-      alert("削除できませんでした。");
+    try {
+      await deleteCompany(id);
+      await loadCompanies();
+    } catch (error) {
       console.error(error);
-      return;
+      alert("削除に失敗しました。");
     }
-
-    await fetchCompanies(user.id);
-  }
-
-  if (loading) {
-    return (
-      <main className="min-h-screen flex items-center justify-center">
-        読み込み中...
-      </main>
-    );
   }
 
   return (
-    <main className="min-h-screen bg-slate-100 p-10">
+    <main className="min-h-screen bg-slate-100 p-8">
 
       <div className="max-w-7xl mx-auto">
 
-        <div className="flex justify-between items-center mb-10">
+        <div className="flex items-center justify-between mb-8">
 
-          <div>
-
-            <h1 className="text-4xl font-bold">
-              応募企業一覧
-            </h1>
-
-            <p className="text-slate-500 mt-2">
-              登録企業数：{companies.length}社
-            </p>
-
-          </div>
+          <h1 className="text-3xl font-bold">
+            🏢 応募企業一覧
+          </h1>
 
           <button
-            onClick={() => {
-              setEditingCompany(null);
-              setOpenModal(true);
-            }}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl"
+            onClick={() => setOpen(true)}
+            className="rounded-lg bg-blue-600 px-5 py-3 text-white font-semibold hover:bg-blue-700"
           >
-            ＋企業追加
+            ＋ 企業追加
           </button>
 
         </div>
-                <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
 
-          {companies.length === 0 ? (
+        <div className="overflow-hidden rounded-xl bg-white shadow">
 
-            <div className="col-span-full bg-white rounded-2xl p-10 text-center shadow">
+          <table className="w-full">
 
-              <p className="text-slate-500 text-lg">
-                まだ企業が登録されていません。
-              </p>
+            <thead className="bg-slate-200">
 
-            </div>
+              <tr>
 
-          ) : (
+                <th className="p-4 text-left">企業名</th>
 
-            companies.map((company) => (
+                <th className="p-4 text-left">業界</th>
 
-              <div
-                key={company.id}
-                className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition"
-              >
+                <th className="p-4 text-left">選考状況</th>
 
-                <div className="flex justify-between items-start">
+                <th className="p-4 text-left">応募日</th>
 
-                  <div>
+                <th className="p-4 text-center">操作</th>
 
-                    <h2 className="text-2xl font-bold">
-                      🏢 {company.company_name}
-                    </h2>
+              </tr>
 
-                    <p className="text-slate-500 mt-2">
+            </thead>
+
+            <tbody>
+
+              {loading ? (
+
+                <tr>
+
+                  <td
+                    colSpan={5}
+                    className="p-8 text-center"
+                  >
+                    読み込み中...
+                  </td>
+
+                </tr>
+
+              ) : companies.length === 0 ? (
+
+                <tr>
+
+                  <td
+                    colSpan={5}
+                    className="p-8 text-center text-slate-500"
+                  >
+                    登録された企業はありません
+                  </td>
+
+                </tr>
+
+              ) : (
+
+                companies.map((company) => (
+
+                  <tr
+                    key={company.id}
+                    className="border-t"
+                  >
+
+                    <td className="p-4 font-semibold">
+
+                      <Link
+                        href={`/companies/${company.id}`}
+                        className="text-blue-600 hover:underline"
+                      >
+                        {company.company_name}
+                      </Link>
+
+                    </td>
+
+                    <td className="p-4">
                       {company.industry}
-                    </p>
+                    </td>
 
-                  </div>
+                    <td className="p-4">
+                      {company.status}
+                    </td>
 
-                  <StatusBadge status={company.status} />
+                    <td className="p-4">
+                      {company.applied_date ?? "-"}
+                    </td>
 
-                </div>
+                    <td className="p-4 text-center">
 
-                <div className="mt-6">
+                      <button
+                        onClick={() =>
+                          handleDelete(company.id)
+                        }
+                        className="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+                      >
+                        削除
+                      </button>
 
-                  <p className="text-sm text-slate-500">
-                    応募日
-                  </p>
+                    </td>
 
-                  <p className="font-semibold">
-                    {company.applied_date ?? "-"}
-                  </p>
+                  </tr>
 
-                </div>
+                ))
 
-                <div className="flex gap-2 mt-8">
+              )}
 
-                  <Link
-                    href={`/companies/${company.id}`}
-                    className="flex-1 bg-sky-500 hover:bg-sky-600 text-white text-center py-2 rounded-lg"
-                  >
-                    詳細
-                  </Link>
+            </tbody>
 
-                  <button
-                    onClick={() => {
-                      setEditingCompany(company);
-                      setOpenModal(true);
-                    }}
-                    className="flex-1 bg-amber-500 hover:bg-amber-600 text-white py-2 rounded-lg"
-                  >
-                    編集
-                  </button>
-
-                  <button
-                    onClick={() => deleteCompany(company.id)}
-                    className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg"
-                  >
-                    削除
-                  </button>
-
-                </div>
-
-              </div>
-
-            ))
-
-          )}
+          </table>
 
         </div>
 
       </div>
 
-      <CompanyModal
-        open={openModal}
-        company={editingCompany}
-        onClose={() => {
-          setOpenModal(false);
-          setEditingCompany(null);
-        }}
-        onSaved={handleSaved}
-      />
-
+ {open && (
+  <CompanyModal
+    open={open}
+    company={null}
+    onClose={() => {
+      setOpen(false);
+    }}
+    onSaved={() => {
+      setOpen(false);
+      loadCompanies();
+    }}
+  />
+)}
     </main>
-
   );
 }

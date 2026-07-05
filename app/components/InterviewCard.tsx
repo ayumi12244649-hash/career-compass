@@ -1,150 +1,135 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { useState } from "react";
+
+import { useInterview } from "@/hooks/useInterview";
+
+import InterviewForm from "./interview/InterviewForm";
+import InterviewList from "./interview/InterviewList";
+
+import type { InterviewNote } from "@/types/interview";
 
 type Props = {
   companyId: string;
 };
 
-type InterviewNote = {
-  id: string;
-  question: string;
-  answer: string;
-  memo: string;
-};
+export default function InterviewCard({
+  companyId,
+}: Props) {
+  const {
+    notes,
+    loading,
+    save,
+    update,
+    remove,
+  } = useInterview(companyId);
 
-export default function InterviewCard({ companyId }: Props) {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [memo, setMemo] = useState("");
-  const [notes, setNotes] = useState<InterviewNote[]>([]);
 
-  useEffect(() => {
-    fetchNotes();
-  }, []);
+  const [editingId, setEditingId] =
+    useState<string | null>(null);
 
-  async function fetchNotes() {
-    const { data, error } = await supabase
-      .from("interview_notes")
-      .select("*")
-      .eq("company_id", companyId)
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error(error);
-      return;
-    }
-
-    setNotes(data ?? []);
-  }
-
-  async function saveNote() {
+  const [isEditing, setIsEditing] =
+    useState(false);
+      async function saveNote() {
     if (!question || !answer) {
       alert("質問と回答を入力してください。");
       return;
     }
 
-    const { error } = await supabase
-      .from("interview_notes")
-      .insert({
-        company_id: companyId,
-        question,
-        answer,
-        memo,
-      });
+    try {
+      if (isEditing && editingId) {
+        await update(
+          editingId,
+          question,
+          answer,
+          memo
+        );
 
-    if (error) {
+        alert("更新しました！");
+      } else {
+        await save(
+          question,
+          answer,
+          memo
+        );
+
+        alert("保存しました！");
+      }
+
+      setQuestion("");
+      setAnswer("");
+      setMemo("");
+
+      setEditingId(null);
+      setIsEditing(false);
+
+    } catch (error) {
       console.error(error);
-      alert(error.message);
-      return;
+      alert("保存に失敗しました。");
     }
-
-    alert("面接メモを保存しました！");
-
-    setQuestion("");
-    setAnswer("");
-    setMemo("");
-
-    fetchNotes();
   }
 
-  return (
+  function startEdit(note: InterviewNote) {
+    setEditingId(note.id);
+
+    setQuestion(note.question);
+    setAnswer(note.answer);
+    setMemo(note.memo ?? "");
+
+    setIsEditing(true);
+  }
+
+  async function deleteNote(id: string) {
+    const ok = confirm(
+      "この面接メモを削除しますか？"
+    );
+
+    if (!ok) return;
+
+    try {
+      await remove(id);
+    } catch (error) {
+      console.error(error);
+      alert("削除できませんでした。");
+    }
+  }
+    return (
     <div className="bg-white rounded-xl shadow p-6">
+
       <h2 className="text-2xl font-bold mb-4">
         🎤 面接メモ
       </h2>
 
-      <div className="space-y-4">
-
-        <input
-          type="text"
-          placeholder="質問"
-          className="w-full border rounded p-2"
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-        />
-
-        <textarea
-          placeholder="自分の回答"
-          className="w-full border rounded p-2 h-32"
-          value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
-        />
-
-        <textarea
-          placeholder="メモ"
-          className="w-full border rounded p-2 h-24"
-          value={memo}
-          onChange={(e) => setMemo(e.target.value)}
-        />
-
-        <button
-          onClick={saveNote}
-          className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700"
-        >
-          保存
-        </button>
-
-      </div>
+      <InterviewForm
+        question={question}
+        answer={answer}
+        memo={memo}
+        setQuestion={setQuestion}
+        setAnswer={setAnswer}
+        setMemo={setMemo}
+        saveNote={saveNote}
+        isEditing={isEditing}
+      />
 
       <hr className="my-6" />
 
       <h3 className="text-xl font-bold mb-4">
         📋 保存済み面接メモ
       </h3>
-
-      {notes.length === 0 ? (
+            {loading ? (
         <p className="text-gray-500">
-          まだ保存されていません。
+          読み込み中...
         </p>
       ) : (
-        <div className="space-y-4">
-          {notes.map((note) => (
-            <div
-              key={note.id}
-              className="border rounded-lg p-4"
-            >
-              <h4 className="font-bold text-lg">
-                Q. {note.question}
-              </h4>
-
-              <p className="mt-2 whitespace-pre-wrap">
-                <strong>回答：</strong>
-                {note.answer}
-              </p>
-
-              {note.memo && (
-                <p className="mt-2 text-gray-600 whitespace-pre-wrap">
-                  <strong>メモ：</strong>
-                  {note.memo}
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
+        <InterviewList
+          notes={notes}
+          onEdit={startEdit}
+          onDelete={deleteNote}
+        />
       )}
-
-    </div>
+          </div>
   );
 }
