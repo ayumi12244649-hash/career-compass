@@ -9,12 +9,13 @@
     alt="Career Compass Logo"
   />
 </p>
-> あなたの未来を、AIがナビゲート。
+<p align="center">
+  <strong>あなたの未来を、AIがナビゲート。</strong>
+</p>
 
-Career Compass は、就職活動を効率的に管理するための AI搭載就活支援アプリです。
-
-応募企業・ES・面接内容を一元管理し、AIによるES添削で就活をサポートします。
-
+<p align="center">
+  Career Compass は AIを活用した就職活動支援アプリです。
+</p>
 ---
 
 ## ✨ デモ
