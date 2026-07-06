@@ -1,7 +1,10 @@
+<p align="center">
+  <strong>Career Compass Ver.1.0 β</strong>
+</p>
 <h1 align="center">
   Career Compass
 </h1>
-
+---
 <p align="center">
   <img
     src="https://raw.githubusercontent.com/ayumi12244649-hash/career-compass/main/public/logo.png"
