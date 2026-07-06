@@ -1,20 +1,18 @@
 "use client";
-import Card from "@/app/components/ui/Card";
-import ScoreHistoryChart from "../components/ScoreHistoryChart";
-import { saveCareerScore } from "@/services/score.service";
-import AIReportHistory from "../components/AIReportHistory";
-import AIReportCard from "../components/AIReportCard";
-import CareerScoreCard from "../components/CareerScoreCard";
-<div className="my-8">
 
-  <ScoreHistoryChart />
-
-</div>
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import AICareerProfileCard from "../components/AICareerProfileCard";
 import { supabase } from "@/lib/supabase";
-import AICareerCard from "../components/AICareerCard";
+import { saveCareerScore } from "@/services/score.service";
+import ScoreTrendCard from "../components/ScoreTrendCard";
+import Card from "@/app/components/ui/Card";
 import StatusChart from "../components/StatusChart";
+import CareerScoreCard from "../components/CareerScoreCard";
+import AICareerCard from "../components/AICareerCard";
+import AIReportHistory from "../components/AIReportHistory";
+import ScoreHistoryChart from "../components/ScoreHistoryChart";
+import AIReportCard from "../components/AIReportCard";
 export default function Dashboard() {
   const router = useRouter();
 
@@ -34,31 +32,30 @@ export default function Dashboard() {
     checkUser();
   }, []);
 
-  async function checkUser() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+async function checkUser() {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-    if (!user) {
-      router.push("/login");
-      return;
-    }
+  if (!user) {
+    router.push("/login");
+    return;
+  }
 
-    await fetchCompanyCount();
+  await fetchCompanyCount();
+  await fetchESCount();
+  await fetchInterviewCount();
+  await fetchOfferCount();
 
-    await fetchESCount();
-
-    await fetchInterviewCount();
-
-    await fetchOfferCount();
   const score = Math.min(
-  companyCount * 10 +
-  esCount * 15 +
-  interviewCount * 20,
-  100
-);
+    companyCount * 10 +
+      esCount * 15 +
+      interviewCount * 20,
+    100
+  );
 
-await saveCareerScore(score);}
+  await saveCareerScore(score);
+}
 
   async function fetchCompanyCount() {
     const { count, error } = await supabase
@@ -237,7 +234,7 @@ await saveCareerScore(score);}
 
 <div className="my-8">
 
-  <AICareerCard
+  <ScoreTrendCard
     companyCount={companyCount}
     esCount={esCount}
     interviewCount={interviewCount}
@@ -246,8 +243,24 @@ await saveCareerScore(score);}
 </div>
 
 <div className="my-8">
+  <AICareerProfileCard
+    companyCount={companyCount}
+    esCount={esCount}
+    interviewCount={interviewCount}
+  />
+</div>
 
-  <AIReportHistory />
+<div className="my-8">
+  <ScoreHistoryChart />
+</div>
+<div className="my-8">
+
+  <AIReportCard
+    companyCount={companyCount}
+    esCount={esCount}
+    interviewCount={interviewCount}
+    offerCount={offerCount}
+  />
 
 </div>
 
@@ -291,8 +304,8 @@ await saveCareerScore(score);}
           </div>
 
         </div>
-              </section>
+      </section>
 
-    </main>
-  );
+</main>
+);
 }

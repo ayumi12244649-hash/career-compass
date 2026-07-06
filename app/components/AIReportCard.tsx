@@ -1,84 +1,137 @@
 "use client";
 
-import { useState } from "react";
-import { generateReport } from "@/services/ai.service";
-import { saveAIReport } from "@/services/aiReport.service";
-
 type Props = {
   companyCount: number;
   esCount: number;
   interviewCount: number;
-  score: number;
+  offerCount: number;
 };
 
 export default function AIReportCard({
   companyCount,
   esCount,
   interviewCount,
-  score,
+  offerCount,
 }: Props) {
-  const [report, setReport] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  async function handleGenerate() {
-    setLoading(true);
+  const score = Math.min(
+    companyCount * 10 +
+    esCount * 15 +
+    interviewCount * 20,
+    100
+  );
 
-    try {
-      const result = await generateReport(
-companyCount,
-  esCount,
-  interviewCount,
-  score
-);
+  const strengths = [];
 
-setReport(result);
+  if (companyCount >= 5)
+    strengths.push("応募企業数が十分です。");
 
-await saveAIReport(
-  result,
-  score,
-  companyCount,
-  esCount,
-  interviewCount
-);
-    } catch (error) {
-      console.error(error);
-      alert("AI分析に失敗しました。");
-    } finally {
-      setLoading(false);
-    }
-  }
+  if (esCount >= 3)
+    strengths.push("ES作成が順調です。");
+
+  if (interviewCount >= 2)
+    strengths.push("面接経験が増えています。");
+
+  const weakPoints = [];
+
+  if (companyCount < 5)
+    weakPoints.push("応募企業数を増やしましょう。");
+
+  if (esCount < companyCount)
+    weakPoints.push("ES作成が不足しています。");
+
+  if (interviewCount === 0)
+    weakPoints.push("面接対策を始めましょう。");
+
+  const todo = [];
+
+  if (companyCount < 10)
+    todo.push("新規応募2社");
+
+  if (esCount < companyCount)
+    todo.push("ES添削");
+
+  if (interviewCount < 3)
+    todo.push("面接練習");
 
   return (
     <div className="rounded-2xl bg-white p-8 shadow-lg">
 
-      <div className="flex items-center justify-between">
+      <h2 className="text-3xl font-bold mb-6">
+        🤖 AI就活レポート
+      </h2>
 
-        <h2 className="text-3xl font-bold">
-          🤖 AI就活分析
-        </h2>
-
-        <button
-          onClick={handleGenerate}
-          disabled={loading}
-          className="rounded-xl bg-indigo-600 px-6 py-3 text-white hover:bg-indigo-700 disabled:bg-gray-400"
-        >
-          {loading ? "分析中..." : "AI分析する"}
-        </button>
-
+      <div className="text-5xl font-bold text-blue-600 mb-6">
+        {score}
       </div>
 
-      <div className="mt-8 rounded-xl bg-slate-100 p-6 min-h-[300px]">
+      <div className="space-y-6">
 
-        {report ? (
-          <div className="whitespace-pre-wrap leading-8">
-            {report}
-          </div>
-        ) : (
-          <p className="text-slate-400">
-            「AI分析する」を押すと、
-            あなた専用の就活分析レポートを生成します。
+        <div>
+
+          <h3 className="font-bold mb-2">
+            💪 強み
+          </h3>
+
+          <ul className="list-disc ml-6">
+
+            {strengths.length === 0
+              ? <li>まだ分析できません。</li>
+              : strengths.map((s,i)=><li key={i}>{s}</li>)}
+
+          </ul>
+
+        </div>
+
+        <div>
+
+          <h3 className="font-bold mb-2">
+            ⚠ 改善ポイント
+          </h3>
+
+          <ul className="list-disc ml-6">
+
+            {weakPoints.map((s,i)=>
+              <li key={i}>{s}</li>
+            )}
+
+          </ul>
+
+        </div>
+
+        <div>
+
+          <h3 className="font-bold mb-2">
+            🎯 今週やること
+          </h3>
+
+          <ol className="list-decimal ml-6">
+
+            {todo.map((s,i)=>
+              <li key={i}>{s}</li>
+            )}
+
+          </ol>
+
+        </div>
+
+        <div className="rounded-xl bg-blue-50 p-4">
+
+          <h3 className="font-bold mb-2">
+            AIコメント
+          </h3>
+
+          <p>
+
+            {score>=80
+            ? "非常に順調です。このままES添削と面接対策を続けましょう。"
+            : score>=60
+            ? "順調ですが、応募数をさらに増やすと内定率が上がります。"
+            : "まずは応募企業とES作成を増やすことが重要です。"}
+
           </p>
-        )}
+
+        </div>
 
       </div>
 

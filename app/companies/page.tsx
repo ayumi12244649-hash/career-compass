@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
+import CareerScoreCard from "@/app/components/CareerScoreCard";
 import type { Company } from "@/types/company";
 
 import {
@@ -176,7 +176,7 @@ export default function CompaniesPage() {
 
       </div>
 
- {open && (
+{open && (
   <CompanyModal
     open={open}
     company={null}
@@ -189,6 +189,9 @@ export default function CompaniesPage() {
     }}
   />
 )}
-    </main>
-  );
+
+<CareerScoreCard />
+
+</main>
+);
 }

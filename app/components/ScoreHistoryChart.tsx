@@ -20,7 +20,12 @@ type Score = {
 };
 
 export default function ScoreHistoryChart() {
-  const [data, setData] = useState<Score[]>([]);
+  const [data, setData] = useState<
+    {
+      score: number;
+      date: string;
+    }[]
+  >([]);
 
   useEffect(() => {
     loadScores();
@@ -29,7 +34,15 @@ export default function ScoreHistoryChart() {
   async function loadScores() {
     const scores = await fetchCareerScores();
 
-    setData(scores);
+    const chartData = scores.map((item) => ({
+      score: item.score,
+      date: new Date(item.created_at).toLocaleDateString("ja-JP", {
+        month: "numeric",
+        day: "numeric",
+      }),
+    }));
+
+    setData(chartData);
   }
 
   return (
@@ -50,16 +63,9 @@ export default function ScoreHistoryChart() {
 
             <CartesianGrid strokeDasharray="3 3" />
 
-            <XAxis
-              dataKey="created_at"
-              tickFormatter={(v) =>
-                new Date(v).toLocaleDateString()
-              }
-            />
+            <XAxis dataKey="date" />
 
-            <YAxis
-              domain={[0, 100]}
-            />
+            <YAxis domain={[0, 100]} />
 
             <Tooltip />
 
@@ -68,6 +74,8 @@ export default function ScoreHistoryChart() {
               dataKey="score"
               stroke="#2563eb"
               strokeWidth={3}
+              dot={{ r: 5 }}
+              activeDot={{ r: 7 }}
             />
 
           </LineChart>
