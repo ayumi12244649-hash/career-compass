@@ -25,7 +25,18 @@
 🌐 https://career-compass-x774.vercel.app
 
 ---
+## ✨ 主な機能
 
+- 🏢 応募企業管理
+- 📄 ES（エントリーシート）管理
+- 🤖 AI ES添削
+- 🎤 面接メモ管理
+- 📊 Career Score
+- 📈 Career Score推移グラフ
+- 📉 スコア変化分析
+- 🤖 AIキャリア分析
+- 📝 AI就活レポート
+- 👤 AI就活カルテ
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/ayumi12244649-hash/career-compass/main/public/logo.png" width="220" alt="Career Compass Logo">
