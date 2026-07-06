@@ -192,5 +192,25 @@ Career Compass Project
 AI × 就職活動支援
 
 ---
+## 🛠 Tech Stack
+
+- Next.js
+- TypeScript
+- React
+- Tailwind CSS
+- Supabase
+- OpenAI API
+- Vercel
+
+## 📌 Roadmap
+
+- [x] 認証機能
+- [x] 企業管理
+- [x] ES管理
+- [x] 面接メモ
+- [ ] Career Score
+- [ ] AI不採用分析
+- [ ] AI面接練習
+- [ ] 就活ダッシュボード
 
 ⭐ このプロジェクトが役に立ったら Star をお願いします！
