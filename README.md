@@ -25,6 +25,29 @@
 🌐 https://career-compass-x774.vercel.app
 
 ---
+## 📷 Screenshots
+
+### 🏠 Home
+
+![Home](./screenshots/スクリーンショット 2026-07-05 202354.png)
+
+---
+
+### 📊 Dashboard
+
+![Dashboard](./screenshots/スクリーンショット 2026-07-05 202408.png)
+
+---
+
+### 📄 Entry Sheet Management
+
+![ES](./screenshots/スクリーンショット 2026-07-05 202446.png)
+
+---
+
+### 🤖 AI Rejection Analysis
+
+![AI](./screenshots/スクリーンショット 2026-07-05 202457.png)
 ## ✨ 主な機能
 
 - 🏢 応募企業管理
@@ -60,6 +83,26 @@
 
 ![Career Compass Home](https://raw.githubusercontent.com/ayumi12244649-hash/career-compass/main/public/screenshot-home.png)
 ---
+## 🗺 Roadmap
+
+### v1.0.0 Beta
+- ✅ Company Management
+- ✅ Entry Sheet
+- ✅ Interview Memo
+- ✅ Career Score
+- ✅ AI Career Report
+- ✅ AI Career Profile
+- ✅ AI Rejection Analysis
+
+### v1.1
+- 🤖 AI Mentor
+- 🧠 AI Memory
+- 📈 AI Growth Analysis
+
+### v2.0
+- 💳 Premium Plan
+- 📱 Mobile Optimization
+- 🌍 Multi-language Support
 
 # 🚀 主な機能
 
