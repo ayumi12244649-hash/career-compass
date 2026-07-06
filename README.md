@@ -1,96 +1,184 @@
-# 🚀 Career Compass
+# 🧭 Career Compass
 
-> AIがあなたの就職活動をサポートする就活支援アプリ
+> あなたの未来を、AIがナビゲート。
 
-Career Compass は、ES添削・面接練習・不採用分析・キャリアスコアを一つにまとめたAI就活支援サービスです。
+Career Compass は、就職活動を効率的に管理するための AI搭載就活支援アプリです。
 
----
-
-## ✨ 主な機能
-
-### 🏢 企業管理
-- 応募企業を登録・管理
-- 選考状況を記録
-- 応募日を管理
-
-### ✍ AI ES添削
-- ESをAIがレビュー
-- 改善点をフィードバック
-- より伝わる文章へブラッシュアップ
-
-### 🎤 AI面接練習
-- 想定質問に回答
-- AIが回答内容を採点
-- 良かった点・改善点を提示
-
-### ❌ AI不採用分析
-- 不採用理由をAIが分析
-- 次回への改善ポイントを提案
-
-### 📊 Career Score
-- 就活状況をスコア化
-- 成長を可視化
-
-### 📈 AIレポート
-- 就活状況を総合分析
-- AIから次のアクションを提案
+応募企業・ES・面接内容を一元管理し、AIによるES添削で就活をサポートします。
 
 ---
 
-## 🛠 技術スタック
+## ✨ デモ
 
-- Next.js 15
-- React
-- TypeScript
-- Tailwind CSS
-- Supabase
-- OpenAI API
-- Vercel
+Coming Soon...
+
+（Vercel公開後にURLを追加）
 
 ---
 
-## 📷 スクリーンショット
+## 📸 スクリーンショット
 
-### 🏠 ランディングページ
+Coming Soon...
 
-![Landing](C:\Projects\career-compass\app\screenshots\スクリーンショット 2026-07-05 202354.png)
-
----
-
-### 📊 ダッシュボード
-
-![Dashboard](C:\Projects\career-compass\app\screenshots\スクリーンショット 2026-07-05 202408.png)
+（トップページ・ダッシュボードの画像を追加予定）
 
 ---
 
-### ✍ AI ES添削
+# 🚀 主な機能
 
-![ES Review](C:\Projects\career-compass\app\screenshots\スクリーンショット 2026-07-05 202446.png)
+✅ ユーザー認証（Supabase Auth）
+
+✅ 企業管理（CRUD）
+
+- 企業登録
+- 編集
+- 削除
+- 応募状況管理
+
+✅ ES（エントリーシート）管理
+
+- 作成
+- 編集
+- 削除
+
+✅ AI ES添削
+
+- OpenAI APIによるフィードバック
+- 添削結果保存
+
+✅ 面接メモ管理
+
+- 面接内容記録
+- 振り返り
 
 ---
 
-### ❌ AI不採用分析
+# 🛠 技術スタック
 
-![Rejection](C:\Projects\career-compass\app\screenshots\スクリーンショット 2026-07-05 202457.png)
+| Category | Technology |
+|-----------|------------|
+| Framework | Next.js 15 |
+| Language | TypeScript |
+| UI | React |
+| Styling | Tailwind CSS |
+| Database | Supabase |
+| Authentication | Supabase Auth |
+| AI | OpenAI API |
+| Notification | Sonner |
+| Deploy | Vercel |
 
 ---
 
-## 🚀 今後の予定
+# 📂 ディレクトリ構成
 
-- PWA対応
-- モバイル最適化
+```text
+app/
+ ├─ api/
+ ├─ companies/
+ ├─ components/
+ ├─ dashboard/
+ ├─ login/
+ ├─ register/
+
+hooks/
+
+services/
+
+types/
+
+lib/
+
+public/
+```
+
+---
+
+# 🎯 開発目的
+
+就職活動では
+
+- 応募企業
+- ES
+- 面接内容
+
+などがバラバラになりがちです。
+
+Career Compass は、それらを一つにまとめ、
+
+「就活の進捗を可視化する」
+
+ことを目的に開発しました。
+
+さらにAIを組み合わせることで、
+
+ES添削や振り返りまで支援します。
+
+---
+
+# 🌱 今後のロードマップ
+
+## Version 1.1
+
+- AI面接フィードバック
+- ダッシュボード改善
 - 通知機能
-- AI就活ロードマップ
-- 求人情報との連携
+
+## Version 1.2
+
+- 選考スケジュール
+- カレンダー連携
+- AI企業分析
+
+## Version 2.0
+
+- 就活カルテ
+- 成長分析
+- AIキャリアアドバイザー
 
 ---
 
-## 👨‍💻 開発
+# ⚙️ ローカル起動
 
-OKITA LAB
+```bash
+git clone https://github.com/あなたのユーザー名/career-compass.git
+
+cd career-compass
+
+npm install
+
+npm run dev
+```
 
 ---
 
-## 📄 License
+## 環境変数
 
-MIT
+`.env.local`
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+
+OPENAI_API_KEY=
+```
+
+---
+
+# 📄 License
+
+MIT License
+
+---
+
+# 👨‍💻 Developer
+
+**OKITA LAB**
+
+Career Compass Project
+
+AI × 就職活動支援
+
+---
+
+⭐ このプロジェクトが役に立ったら Star をお願いします！
