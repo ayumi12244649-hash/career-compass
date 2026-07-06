@@ -38,6 +38,20 @@
 - 📝 AI就活レポート
 - 👤 AI就活カルテ
 
+## 🛠 Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS |
+| Database | Supabase |
+| Authentication | Supabase Auth |
+| AI | OpenAI API |
+| Charts | Recharts |
+| Deployment | Vercel |
+| Version Control | GitHub |
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/ayumi12244649-hash/career-compass/main/public/logo.png" width="220" alt="Career Compass Logo">
 </p>
