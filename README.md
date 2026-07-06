@@ -25,21 +25,22 @@
 🌐 https://career-compass-x774.vercel.app
 
 ---
-<h3>🏠 Home</h3>
+## 🏠 Home
 
-<img src="./screenshots/home.png" width="900">
+![Home](public/screenshot-home.png)
 
-<h3>📊 Dashboard</h3>
+## 📊 Dashboard
 
-<img src="./screenshots/dashboard.png" width="900">
+![Dashboard](public/dashboard.png)
 
-<h3>📄 Entry Sheet Management</h3>
+## 📄 Entry Sheet
 
-<img src="./screenshots/es.png" width="900">
+![ES](public/es.png)
 
-<h3>🤖 AI Rejection Analysis</h3>
+## ❌ AI Rejection Analysis
 
-<img src="./screenshots/rejection-analysis.png" width="900">
+![AI](public/rejection-analysis.png)
+
 ## ✨ 主な機能
 
 - 🏢 応募企業管理
