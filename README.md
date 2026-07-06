@@ -1,6 +1,8 @@
 # 🧭 Career Compass
 
-![Career Compass Logo](./public/logo.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ayumi12244649-hash/career-compass/main/public/logo.png" width="250" alt="Career Compass Logo">
+</p>
 
 > あなたの未来を、AIがナビゲート。
 
