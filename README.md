@@ -282,3 +282,9 @@ AI × 就職活動支援
 - [ ] 就活ダッシュボード
 
 ⭐ このプロジェクトが役に立ったら Star をお願いします！
+
+## 📄 License
+
+MIT License
+
+Copyright © 2026 OKITA LAB
