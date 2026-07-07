@@ -47,6 +47,10 @@ export async function buildContext(companyId: string) {
 
   if (historyError) throw historyError;
 
+  // ==========================
+  // ES
+  // ==========================
+
   const esText =
     entrySheets?.length
       ? entrySheets
@@ -54,18 +58,22 @@ export async function buildContext(companyId: string) {
             (es, i) => `
 ES${i + 1}
 
-タイトル:
+タイトル：
 ${es.title}
 
-内容:
+内容：
 ${es.content}
 
-AI添削:
+AI添削：
 ${es.review_result ?? "なし"}
 `
           )
           .join("\n-------------------------\n")
       : "ESは登録されていません。";
+
+  // ==========================
+  // 面接
+  // ==========================
 
   const interviewText =
     interviews?.length
@@ -74,15 +82,19 @@ ${es.review_result ?? "なし"}
             (note, i) => `
 面接メモ${i + 1}
 
-タイトル:
+タイトル：
 ${note.title}
 
-内容:
+内容：
 ${note.content}
 `
           )
           .join("\n-------------------------\n")
       : "面接メモは登録されていません。";
+
+  // ==========================
+  // 不採用分析
+  // ==========================
 
   const rejectionText =
     rejections?.length
@@ -97,6 +109,10 @@ ${report.content}
           .join("\n-------------------------\n")
       : "不採用分析は登録されていません。";
 
+  // ==========================
+  // チャット履歴
+  // ==========================
+
   const historyText =
     history?.length
       ? history
@@ -109,6 +125,37 @@ ${chat.message}
           )
           .join("\n-------------------------\n")
       : "過去の相談履歴はありません。";
+
+  // ==========================
+  // 成長情報
+  // ==========================
+
+  const growthText = `
+応募企業数：1
+
+登録ES数：${entrySheets?.length ?? 0}
+
+面接メモ数：${interviews?.length ?? 0}
+
+不採用分析数：${rejections?.length ?? 0}
+
+最近の相談数：${history?.length ?? 0}
+`;
+const diffText = `
+前回との差分
+
+登録ES数：${entrySheets?.length ?? 0}
+
+面接メモ数：${interviews?.length ?? 0}
+
+不採用分析数：${rejections?.length ?? 0}
+
+相談履歴数：${history?.length ?? 0}
+`;
+
+  // ==========================
+  // AIへ渡すContext
+  // ==========================
 
   return `
 企業情報
@@ -136,6 +183,17 @@ ${interviewText}
 
 ${rejectionText}
 
+====================
+
+最近の成長
+
+${growthText}
+
+====================
+
+前回との差分
+
+${diffText}
 ====================
 
 過去の相談履歴

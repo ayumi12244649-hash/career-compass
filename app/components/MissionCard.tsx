@@ -32,7 +32,10 @@ export default function MissionCard({
         );
 
   return (
-    <div className="bg-white rounded-xl shadow p-6">
+   <div
+  id="today-mission"
+  className="bg-white rounded-xl shadow p-6 scroll-mt-8"
+>
 
       <h2 className="text-2xl font-bold mb-2">
         🎯 Today's Mission

@@ -50,23 +50,7 @@ export default function CompaniesPage() {
     }
   }
 
-  const missions = [
-  {
-    id: 1,
-    title: "志望動機を1文改善する",
-    done: false,
-  },
-  {
-    id: 2,
-    title: "面接練習を3問やる",
-    done: false,
-  },
-  {
-    id: 3,
-    title: "企業研究を15分する",
-    done: false,
-  },
-];
+
   return (
     <main className="min-h-screen bg-slate-100 p-8">
 
@@ -74,8 +58,8 @@ export default function CompaniesPage() {
 
 <div className="mb-8">
   <DailyMissionCard
-    missions={missions}
-  />
+  companyId={companies[0]?.id ?? ""}
+/>
 </div>
 
 <div className="mb-8">
