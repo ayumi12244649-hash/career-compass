@@ -1,5 +1,7 @@
 "use client";
 
+import AICoachCard from "@/app/components/AICoachCard";
+import DailyMissionCard from "@/app/components/DailyMissionCard";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import CareerScoreCard from "@/app/components/CareerScoreCard";
@@ -16,6 +18,7 @@ export default function CompaniesPage() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
+
 
   useEffect(() => {
     loadCompanies();
@@ -47,16 +50,43 @@ export default function CompaniesPage() {
     }
   }
 
+  const missions = [
+  {
+    id: 1,
+    title: "志望動機を1文改善する",
+    done: false,
+  },
+  {
+    id: 2,
+    title: "面接練習を3問やる",
+    done: false,
+  },
+  {
+    id: 3,
+    title: "企業研究を15分する",
+    done: false,
+  },
+];
   return (
     <main className="min-h-screen bg-slate-100 p-8">
 
       <div className="max-w-7xl mx-auto">
 
+<div className="mb-8">
+  <DailyMissionCard
+    missions={missions}
+  />
+</div>
+
+<div className="mb-8">
+  <AICoachCard />
+</div>
         <div className="flex items-center justify-between mb-8">
 
           <h1 className="text-3xl font-bold">
             🏢 応募企業一覧
           </h1>
+
 
           <button
             onClick={() => setOpen(true)}
@@ -174,6 +204,14 @@ export default function CompaniesPage() {
 
         </div>
 
+        <div className="mt-8">
+          <CareerScoreCard
+            companyCount={companies.length}
+            esCount={0}
+            interviewCount={0}
+          />
+        </div>
+
       </div>
 
 {open && (
@@ -189,9 +227,6 @@ export default function CompaniesPage() {
     }}
   />
 )}
-
-<CareerScoreCard />
-
 </main>
 );
 }

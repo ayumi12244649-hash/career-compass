@@ -1,16 +1,21 @@
 "use client";
 
-import InterviewPracticeHistory from "@/app/components/InterviewPracticeHistory";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
-import { fetchCompany } from "@/services/company.service";
 import type { Company } from "@/types/company";
+import { fetchCompany } from "@/services/company.service";
+import MissionCard from "@/app/components/MissionCard";
+import AIDashboardCard from "@/app/components/AIDashboardCard";
+import AICoachCard from "@/app/components/AICoachCard";
+import AIMemoryCard from "@/app/components/AIMemoryCard";
 
 import ESCard from "@/app/components/ESCard";
 import InterviewCard from "@/app/components/InterviewCard";
-import RejectionAnalysisCard from "@/app/components/RejectionAnalysisCard";
 import InterviewPracticeCard from "@/app/components/InterviewPracticeCard";
+import InterviewPracticeHistory from "@/app/components/InterviewPracticeHistory";
+import RejectionAnalysisCard from "@/app/components/RejectionAnalysisCard";
+import MentorChat from "@/app/components/MentorChat";
 
 export default function CompanyDetailPage() {
   const params = useParams();
@@ -53,11 +58,12 @@ export default function CompanyDetailPage() {
       </main>
     );
   }
-    return (
-    <main className="min-h-screen bg-slate-100 p-8">
 
+  return (
+    <main className="min-h-screen bg-slate-100 p-8">
       <div className="max-w-6xl mx-auto space-y-8">
 
+        {/* 企業情報 */}
         <div className="bg-white rounded-xl shadow p-8">
 
           <h1 className="text-3xl font-bold">
@@ -99,23 +105,54 @@ export default function CompanyDetailPage() {
           </div>
 
         </div>
-  <ESCard
+
+       {/* AI Dashboard */}
+<AIDashboardCard
+  companyId={company.id}
+/>
+
+{/* Today's Mission */}
+<MissionCard
+  companyId={company.id}
+/>
+
+{/* ES */}
+<ESCard
   companyId={companyId}
 />
 
-<InterviewPracticeCard
-  companyId={company.id}
-/>
+        {/* AI Coach */}
+        <AICoachCard />
+        
 
-<InterviewPracticeHistory
-  companyId={company.id}
-/>
+        {/* 面接練習 */}
+        <InterviewPracticeCard
+          companyId={company.id}
+        />
 
-<RejectionAnalysisCard
-  companyId={company.id}
-  companyName={company.company_name}
-/>
+        {/* AI Mentor */}
+        <MentorChat
+          companyId={company.id}
+          userId={company.user_id}
+        />
+
+        {/* AI Memory */}
+        <AIMemoryCard
+          companyId={company.id}
+        />
+
+        {/* 面接練習履歴 */}
+        <InterviewPracticeHistory
+          companyId={company.id}
+        />
+
+        {/* 不採用分析 */}
+        <RejectionAnalysisCard
+          companyId={company.id}
+          companyName={company.company_name}
+        />
+
       </div>
-          </main>
+    </main>
   );
 }
