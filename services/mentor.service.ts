@@ -53,3 +53,22 @@ export async function askMentor(
 
   return await res.json();
 }
+/**
+ * 最近の会話を取得
+ */
+export async function fetchRecentMessages(
+  companyId: string
+) {
+  const { data, error } = await supabase
+    .from("mentor_messages")
+    .select("*")
+    .eq("company_id", companyId)
+    .order("created_at", {
+      ascending: false,
+    })
+    .limit(5);
+
+  if (error) throw error;
+
+  return data?.reverse() ?? [];
+}
