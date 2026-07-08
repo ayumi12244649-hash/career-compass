@@ -5,9 +5,10 @@ import { toast } from "sonner";
 import ESForm from "./ESForm";
 import AIReview from "./AIReview";
 import ESList from "./ESList";
-
+import { checkBadges } from "@/services/badge.service";
 import type { EntrySheet } from "@/types/es";
-
+import { afterESSaved }
+from "@/services/career-engine.service";
 import {
   fetchEntrySheets,
   saveEntrySheet,
@@ -15,7 +16,7 @@ import {
   deleteEntrySheet,
   saveReviewResult,
 } from "@/services/es.service";
-
+import { saveGrowthSnapshot } from "@/services/growth.service";
 type Props = {
   companyId: string;
 };
@@ -86,11 +87,19 @@ export default function ESCard({
       setEditingId(null);
       setIsEditing(false);
 
+      await afterESSaved(companyId);
+
       await loadEntrySheets();
-    } catch (error) {
-      console.error(error);
-      alert("保存に失敗しました。");
-    }
+
+       } catch (error) {
+  console.error("saveES error:", error);
+
+  if (error instanceof Error) {
+    alert(error.message);
+  } else {
+    alert(String(error));
+  }
+}
   }
     function startEdit(es: EntrySheet) {
     console.log("startEdit", es);
@@ -120,9 +129,10 @@ export default function ESCard({
     if (!ok) return;
 
     try {
-      await deleteEntrySheet(id);
+    await deleteEntrySheet(id);
 
-      await loadEntrySheets();
+await afterESSaved(companyId);
+await loadEntrySheets();
     } catch (error) {
       console.error(error);
 

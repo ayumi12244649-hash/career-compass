@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useMission } from "@/hooks/useMission";
-
+import { afterMissionCompleted } from "@/services/career-engine.service";
 type Props = {
   companyId: string;
 };
@@ -70,9 +70,11 @@ export default function MissionCard({
           onClick={async () => {
             if (!title.trim()) return;
 
-            await addMission(title);
+           await addMission(title);
 
-            setTitle("");
+await afterMissionCompleted(companyId);
+
+setTitle("");
           }}
           className="bg-blue-600 text-white px-4 rounded-lg hover:bg-blue-700"
         >
@@ -91,12 +93,14 @@ export default function MissionCard({
             <input
               type="checkbox"
               checked={mission.completed}
-              onChange={(e) =>
-                completeMission(
-                  mission.id,
-                  e.target.checked
-                )
-              }
+              onChange={async (e) => {
+  await completeMission(
+    mission.id,
+    e.target.checked
+  );
+
+  await afterMissionCompleted(companyId);
+}}
             />
 
             <span

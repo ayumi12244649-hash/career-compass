@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { useInterview } from "@/hooks/useInterview";
-
+import { afterInterviewSaved } from "@/services/career-engine.service";
 import InterviewForm from "./interview/InterviewForm";
 import InterviewList from "./interview/InterviewList";
 
@@ -65,7 +65,7 @@ export default function InterviewCard({
 
       setEditingId(null);
       setIsEditing(false);
-
+await afterInterviewSaved(companyId);
     } catch (error) {
       console.error(error);
       alert("保存に失敗しました。");
