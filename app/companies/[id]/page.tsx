@@ -1,21 +1,26 @@
 "use client";
-
+import DailyReportCard
+  from "@/app/components/DailyReportCard";
+import BadgeCard
+  from "@/app/components/BadgeCard";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-
+import GrowthDashboardCard from "@/app/components/GrowthDashboardCard";
 import type { Company } from "@/types/company";
 import { fetchCompany } from "@/services/company.service";
 import MissionCard from "@/app/components/MissionCard";
 import AIDashboardCard from "@/app/components/AIDashboardCard";
 import AICoachCard from "@/app/components/AICoachCard";
 import AIMemoryCard from "@/app/components/AIMemoryCard";
-
+import GrowthHistoryChart
+  from "@/app/components/GrowthHistoryChart";
 import ESCard from "@/app/components/ESCard";
 import InterviewCard from "@/app/components/InterviewCard";
 import InterviewPracticeCard from "@/app/components/InterviewPracticeCard";
 import InterviewPracticeHistory from "@/app/components/InterviewPracticeHistory";
 import RejectionAnalysisCard from "@/app/components/RejectionAnalysisCard";
 import MentorChat from "@/app/components/MentorChat";
+import CareerRecommendCard from "@/app/components/dashboard/CareerRecommendCard";
 
 export default function CompanyDetailPage() {
   const params = useParams();
@@ -106,15 +111,33 @@ export default function CompanyDetailPage() {
 
         </div>
 
-       {/* AI Dashboard */}
+ {/* AI Dashboard */}
 <AIDashboardCard
   companyId={company.id}
 />
 
+
+<GrowthDashboardCard
+  companyId={company.id}
+/>
+
+<GrowthHistoryChart
+  companyId={company.id}
+/>
+
+<BadgeCard
+  companyId={company.id}
+/>
+
+<DailyReportCard
+  companyId={company.id}
+/>
 {/* Today's Mission */}
 <MissionCard
   companyId={company.id}
 />
+<CareerRecommendCard userId={company.user_id} />
+
 
 {/* ES */}
 <ESCard

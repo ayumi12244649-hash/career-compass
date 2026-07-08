@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useMentor } from "@/hooks/useMentor";
 import ReactMarkdown from "react-markdown";
+import { afterMentorMessage } from "@/services/career-engine.service";
 
 type Props = {
   companyId: string;
@@ -43,12 +44,15 @@ export default function MentorChat({
   }
 
   async function handleSend() {
-    if (!text.trim()) return;
+  if (!text.trim()) return;
 
-    await sendMessage(text);
+  await sendMessage(text);
 
-    setText("");
-  }
+  await afterMentorMessage(companyId);
+
+  setText("");
+}
+  
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-8 mt-6">

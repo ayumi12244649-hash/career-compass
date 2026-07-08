@@ -2,17 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import AICareerProfileCard from "../components/AICareerProfileCard";
+import AICareerProfileCard from "../AICareerProfileCard";
 import { supabase } from "@/lib/supabase";
 import { saveCareerScore } from "@/services/score.service";
-import ScoreTrendCard from "../components/ScoreTrendCard";
+import ScoreTrendCard from "../ScoreTrendCard";
 import Card from "@/app/components/ui/Card";
-import StatusChart from "../components/StatusChart";
-import CareerScoreCard from "../components/CareerScoreCard";
-import AICareerCard from "../components/AICareerCard";
-import AIReportHistory from "../components/AIReportHistory";
-import ScoreHistoryChart from "../components/ScoreHistoryChart";
-import AIReportCard from "../components/AIReportCard";
+import StatusChart from "../StatusChart";
+import CareerScoreCard from "../CareerScoreCard";
+import AICareerCard from "../AICareerCard";
+import AIReportHistory from "../AIReportHistory";
+import ScoreHistoryChart from "../ScoreHistoryChart";
+import AIReportCard from "../AIReportCard";
 export default function Dashboard() {
   const router = useRouter();
 

@@ -111,19 +111,39 @@ export async function saveGrowthSnapshot(
       })
       .eq("company_id", companyId);
 
-  const { error } =
-    await supabase
-      .from("growth_snapshots")
-      .insert({
-        company_id: companyId,
-        es_count: esCount ?? 0,
-        interview_count:
-          interviewCount ?? 0,
-        mission_count:
-          missionCount ?? 0,
-        mentor_count:
-          mentorCount ?? 0,
-      });
+  const { data, error } = await supabase
+    .from("growth_snapshots")
+    .insert({
+      company_id: companyId,
+      es_count: esCount ?? 0,
+      interview_count: interviewCount ?? 0,
+      mission_count: missionCount ?? 0,
+      mentor_count: mentorCount ?? 0,
+    })
+    .select();
+
+  console.log("Snapshot Insert:", data);
+
+  if (error) {
+    console.error("Snapshot Error:", error);
+    throw error;
+  }
+}
+/**
+ * 成長履歴を取得
+ */
+export async function fetchGrowthHistory(
+  companyId: string
+) {
+  const { data, error } = await supabase
+    .from("growth_snapshots")
+    .select("*")
+    .eq("company_id", companyId)
+    .order("created_at", {
+      ascending: true,
+    });
 
   if (error) throw error;
+
+  return data as GrowthSnapshot[];
 }
