@@ -1,10 +1,8 @@
 "use client";
 
-import AICoachCard from "@/app/components/AICoachCard";
-import DailyMissionCard from "@/app/components/DailyMissionCard";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import CareerScoreCard from "@/app/components/CareerScoreCard";
+
 import type { Company } from "@/types/company";
 
 import {
@@ -13,12 +11,16 @@ import {
 } from "@/services/company.service";
 
 import CompanyModal from "@/app/components/CompanyModal";
-
+import AIIntelligenceDashboard from "@/app/components/AIIntelligenceDashboard";
+import HomeSummaryCard from "@/app/components/HomeSummaryCard";
+import DailyMissionCard from "@/app/components/DailyMissionCard";
+import AICoachCard from "@/app/components/AICoachCard";
+import CareerScoreCard from "@/app/components/CareerScoreCard";
+import CompanyCard from "@/app/components/CompanyCard";
 export default function CompaniesPage() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
-
 
   useEffect(() => {
     loadCompanies();
@@ -50,167 +52,93 @@ export default function CompaniesPage() {
     }
   }
 
-
   return (
     <main className="min-h-screen bg-slate-100 p-8">
+      <div className="mx-auto max-w-7xl">
 
-      <div className="max-w-7xl mx-auto">
-
-<div className="mb-8">
-  <DailyMissionCard
-  companyId={companies[0]?.id ?? ""}
-/>
-</div>
-
-<div className="mb-8">
-  <AICoachCard />
-</div>
-        <div className="flex items-center justify-between mb-8">
-
-          <h1 className="text-3xl font-bold">
-            🏢 応募企業一覧
-          </h1>
-
-
-          <button
-            onClick={() => setOpen(true)}
-            className="rounded-lg bg-blue-600 px-5 py-3 text-white font-semibold hover:bg-blue-700"
-          >
-            ＋ 企業追加
-          </button>
-
+        {/* AI Intelligence Dashboard */}
+        <div className="mb-8">
+          <AIIntelligenceDashboard
+            userId={companies[0]?.user_id ?? ""}
+          />
         </div>
 
-        <div className="overflow-hidden rounded-xl bg-white shadow">
-
-          <table className="w-full">
-
-            <thead className="bg-slate-200">
-
-              <tr>
-
-                <th className="p-4 text-left">企業名</th>
-
-                <th className="p-4 text-left">業界</th>
-
-                <th className="p-4 text-left">選考状況</th>
-
-                <th className="p-4 text-left">応募日</th>
-
-                <th className="p-4 text-center">操作</th>
-
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              {loading ? (
-
-                <tr>
-
-                  <td
-                    colSpan={5}
-                    className="p-8 text-center"
-                  >
-                    読み込み中...
-                  </td>
-
-                </tr>
-
-              ) : companies.length === 0 ? (
-
-                <tr>
-
-                  <td
-                    colSpan={5}
-                    className="p-8 text-center text-slate-500"
-                  >
-                    登録された企業はありません
-                  </td>
-
-                </tr>
-
-              ) : (
-
-                companies.map((company) => (
-
-                  <tr
-                    key={company.id}
-                    className="border-t"
-                  >
-
-                    <td className="p-4 font-semibold">
-
-                      <Link
-                        href={`/companies/${company.id}`}
-                        className="text-blue-600 hover:underline"
-                      >
-                        {company.company_name}
-                      </Link>
-
-                    </td>
-
-                    <td className="p-4">
-                      {company.industry}
-                    </td>
-
-                    <td className="p-4">
-                      {company.status}
-                    </td>
-
-                    <td className="p-4">
-                      {company.applied_date ?? "-"}
-                    </td>
-
-                    <td className="p-4 text-center">
-
-                      <button
-                        onClick={() =>
-                          handleDelete(company.id)
-                        }
-                        className="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
-                      >
-                        削除
-                      </button>
-
-                    </td>
-
-                  </tr>
-
-                ))
-
-              )}
-
-            </tbody>
-
-          </table>
-
+        {/* Summary */}
+        <div className="mb-8">
+          <HomeSummaryCard
+            companyCount={companies.length}
+            esCount={0}
+            interviewCount={0}
+            score={82}
+          />
         </div>
 
-        <div className="mt-8">
+        {/* Dashboard Cards */}
+        <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-3">
+
+          <DailyMissionCard
+            companyId={companies[0]?.id ?? ""}
+          />
+
+          <AICoachCard />
+
           <CareerScoreCard
             companyCount={companies.length}
             esCount={0}
             interviewCount={0}
           />
+
         </div>
 
-      </div>
+        {/* Header */}
+        <div className="mb-8 flex items-center justify-between">
 
-{open && (
-  <CompanyModal
-    open={open}
-    company={null}
-    onClose={() => {
-      setOpen(false);
-    }}
-    onSaved={() => {
-      setOpen(false);
-      loadCompanies();
-    }}
-  />
+          <h1 className="text-3xl font-bold">
+            🏢 応募企業一覧
+          </h1>
+
+          <button
+            onClick={() => setOpen(true)}
+            className="rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700"
+          >
+            ＋ 企業追加
+          </button>
+
+        </div>
+{/* Company Cards */}
+
+{!loading && companies.length > 0 && (
+
+  <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 mb-8">
+
+    {companies.map((company) => (
+
+      <CompanyCard
+        key={company.id}
+        company={company}
+        onDelete={handleDelete}
+      />
+
+    ))}
+
+  </div>
+
 )}
-</main>
-);
+  
+
+            {open && (
+        <CompanyModal
+          open={open}
+          company={null}
+          onClose={() => setOpen(false)}
+          onSaved={() => {
+            setOpen(false);
+            loadCompanies();
+          }}
+        />
+      )}
+
+      </div>
+    </main>
+  );
 }

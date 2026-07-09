@@ -10,4 +10,8 @@ export interface Company {
   applied_date: string;
 
   created_at: string;
+
+  // 追加
+  esCount?: number;
+  interviewCount?: number;
 }
