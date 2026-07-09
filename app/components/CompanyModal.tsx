@@ -83,13 +83,19 @@ export default function CompanyModal({
     } else {
       const result = await supabase
         .from("companies")
-        .insert({
-          company_name: companyName,
-          industry,
-          status,
-          applied_date: appliedDate || null,
-          user_id: user.id,
-        });
+        const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+await supabase
+  .from("companies")
+  .insert({
+    user_id: user?.id,
+    company_name: companyName,
+    industry: industry,
+    status: status,
+    applied_date: appliedDate,
+  });
 
       error = result.error;
     }

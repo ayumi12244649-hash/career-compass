@@ -35,31 +35,105 @@ const { data: careerScores } = await supabase
   .eq("user_id", userId)
   .order("created_at", { ascending: true });
 
-    const prompt = `
+  const companiesText = (companies ?? [])
+  .map(
+    (company) => `
+会社名: ${company.company_name}
+業界: ${company.industry}
+選考状況: ${company.status}
+応募日: ${company.applied_date}
+`
+  )
+  .join("\n");
+  const entrySheetsText = (entrySheets ?? [])
+  .map(
+    (es) => `
+タイトル: ${es.title}
+内容:
+${es.content}
+
+AI添削:
+${es.review_result ?? "なし"}
+`
+  )
+  .join("\n");
+  const interviewsText = (interviews ?? [])
+  .map(
+    (interview) => `
+質問:
+${interview.question}
+
+回答:
+${interview.answer}
+
+メモ:
+${interview.memo ?? "なし"}
+`
+  )
+  .join("\n");
+  const careerScoresText = (careerScores ?? [])
+  .map(
+    (score) => `
+日付: ${score.created_at}
+スコア: ${score.score}
+`
+  )
+  .join("\n");
+
+console.log("Companies:", companies);
+console.log("EntrySheets:", entrySheets);
+console.log("Interviews:", interviews);
+console.log("CareerScores:", careerScores);
+console.log("UserID:", userId);
+console.log("Companies:", companies);
+console.log("EntrySheets:", entrySheets);
+console.log("Interviews:", interviews);
+console.log("CareerScores:", careerScores);
+const prompt = `
 あなたはCareer Compass専属のAIキャリアアドバイザーです。
 
-以下の情報を分析してください。
+以下はユーザーの就職活動データです。
 
-【企業】
-${JSON.stringify(companies, null, 2)}
+=========================
+【応募企業】
+${companiesText}
 
-【ES】
-${JSON.stringify(entrySheets, null, 2)}
+=========================
+【エントリーシート】
+${entrySheetsText}
 
+=========================
 【面接】
-${JSON.stringify(interviews, null, 2)}
+${interviewsText}
 
+=========================
 【キャリアスコア】
-${JSON.stringify(careerScores, null, 2)}
+${careerScoresText}
+
+=========================
+
+あなたは単なるアドバイスではなく、
+ユーザーの過去の傾向・成長・課題を分析してください。
 
 以下の形式で回答してください。
 
-## 向いている職種
+## 就活全体の分析
+
 ## 強み
-## 改善点
-## 今後挑戦すべき業界
-## 次にやるべきこと
+
+## 苦手なポイント
+
+## 向いている職種
+
+## 向いている業界
+
+## 次に応募すると良い企業の特徴
+
+## 今後1週間でやるべきこと（優先順位付き）
+
+できるだけ具体的に回答してください。
 `;
+
 
     const response = await client.responses.create({
       model: "gpt-5.5",

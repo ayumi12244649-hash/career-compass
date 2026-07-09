@@ -15,12 +15,19 @@ import AIMemoryCard from "@/app/components/AIMemoryCard";
 import GrowthHistoryChart
   from "@/app/components/GrowthHistoryChart";
 import ESCard from "@/app/components/ESCard";
-import InterviewCard from "@/app/components/InterviewCard";
+
 import InterviewPracticeCard from "@/app/components/InterviewPracticeCard";
 import InterviewPracticeHistory from "@/app/components/InterviewPracticeHistory";
 import RejectionAnalysisCard from "@/app/components/RejectionAnalysisCard";
 import MentorChat from "@/app/components/MentorChat";
 import CareerRecommendCard from "@/app/components/dashboard/CareerRecommendCard";
+import ESAnalysisCard from "@/app/components/ESAnalysisCard";
+import AICompanyLearningCard
+  from "@/app/components/AICompanyLearningCard";
+import CompanyComparisonCard
+  from "@/app/components/CompanyComparisonCard";
+  import AIIntelligenceDashboard
+  from "@/app/components/AIIntelligenceDashboard";
 
 export default function CompanyDetailPage() {
   const params = useParams();
@@ -37,18 +44,22 @@ export default function CompanyDetailPage() {
     loadCompany();
   }, [companyId]);
 
-  async function loadCompany() {
-    try {
-      const data = await fetchCompany(companyId);
-      setCompany(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
+ async function loadCompany() {
+  try {
+    const data = await fetchCompany(companyId);
+
+    console.log("Fetched Company:", data);
+
+    setCompany(data);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
   }
+}
 
   if (loading) {
+    
     return (
       <main className="p-10">
         <p>読み込み中...</p>
@@ -63,6 +74,8 @@ export default function CompanyDetailPage() {
       </main>
     );
   }
+console.log("Company:", company);
+console.log("Company user_id:", company.user_id);
 
   return (
     <main className="min-h-screen bg-slate-100 p-8">
@@ -110,6 +123,10 @@ export default function CompanyDetailPage() {
           </div>
 
         </div>
+<AIIntelligenceDashboard
+  userId={company.user_id}
+/>
+
 
  {/* AI Dashboard */}
 <AIDashboardCard
@@ -138,8 +155,18 @@ export default function CompanyDetailPage() {
 />
 <CareerRecommendCard userId={company.user_id} />
 
+<AICompanyLearningCard
+  companyId={company.id}
+/>
 
-{/* ES */}
+<CompanyComparisonCard
+  userId={company.user_id}
+/>
+
+<ESAnalysisCard
+  userId={company.user_id}
+/>
+
 <ESCard
   companyId={companyId}
 />
