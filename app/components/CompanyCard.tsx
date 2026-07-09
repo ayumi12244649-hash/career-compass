@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { Company } from "@/types/company";
 
 type Props = {
@@ -12,7 +13,7 @@ export default function CompanyCard({
   company,
   onDelete,
 }: Props) {
-
+const router = useRouter();
   const statusColor = () => {
     switch (company.status) {
       case "応募予定":
@@ -45,7 +46,10 @@ export default function CompanyCard({
   };
 
   return (
-    <div className="rounded-2xl bg-white p-6 shadow-lg transition hover:-translate-y-1 hover:shadow-xl">
+    <div
+  onClick={() => router.push(`/companies/${company.id}`)}
+  className="cursor-pointer rounded-2xl bg-white p-6 shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
+>
 
       <h2 className="text-2xl font-bold">
         🏢 {company.company_name}
@@ -80,6 +84,7 @@ export default function CompanyCard({
       <div className="mt-8 flex gap-3">
 
         <Link
+  onClick={(e) => e.stopPropagation()}
           href={`/companies/${company.id}`}
           className="flex-1 rounded-lg bg-indigo-600 px-4 py-2 text-center text-white hover:bg-indigo-700"
         >
@@ -87,7 +92,10 @@ export default function CompanyCard({
         </Link>
 
         <button
-          onClick={() => onDelete(company.id)}
+         onClick={(e) => {
+  e.stopPropagation();
+  onDelete(company.id);
+}} 
           className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
         >
           削除
