@@ -29,13 +29,10 @@ export async function POST(req: Request) {
     }
 
     if (!snapshot) {
-      return NextResponse.json(
-        {
-          error: "Growth Snapshotがありません。",
-        },
-        { status: 400 }
-      );
-    }
+  return NextResponse.json({
+    report: "まだ十分なデータがありません。ESや面接を登録するとAIレポートが表示されます。",
+  });
+}
 
     const prompt = `
 あなたはCareer Compass専属AIキャリアコーチです。

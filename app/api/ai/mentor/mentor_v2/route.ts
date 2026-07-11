@@ -9,31 +9,39 @@ import { supabase } from "@/lib/supabase";
 
 export async function POST(req: Request) {
   try {
+    console.log("① Mentor API Start");
+
     const { companyId, message } =
       await req.json();
 
-    // AIへ渡すContext生成
+    console.log("② Request OK", companyId, message);
+
     const context =
       await buildContext(companyId);
 
-    // AI回答生成
+    console.log("③ Context OK");
+
     const reply =
       await generateMentorReply(
         context,
         message
       );
-          // Today's Mission保存
+
+    console.log("④ Reply OK");
+
     await saveMissions(
       companyId,
       reply
     );
 
-    // AI Memory更新
+    console.log("⑤ Mission Saved");
+
     await updateMemory(
       companyId
     );
 
-    // チャット履歴保存
+    console.log("⑥ Memory Updated");
+
     await supabase
       .from("mentor_messages")
       .insert([
@@ -48,11 +56,15 @@ export async function POST(req: Request) {
           message: reply,
         },
       ]);
-          return NextResponse.json({
+
+    console.log("⑦ Messages Saved");
+
+    return NextResponse.json({
       reply,
     });
+
   } catch (error) {
-    console.error(error);
+    console.error("Mentor Error:", error);
 
     return NextResponse.json(
       {
