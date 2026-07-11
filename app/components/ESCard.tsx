@@ -149,7 +149,7 @@ await loadEntrySheets();
   setLoadingReview(true);
 
   try {
-    const res = await fetch("/api/ai", {
+    const res = await fetch("/api/ai/es", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

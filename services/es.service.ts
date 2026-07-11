@@ -67,3 +67,18 @@ export async function saveReviewResult(
 
   if (error) throw error;
 }
+export async function fetchEntrySheetCount(
+  companyId: string
+) {
+  const { count, error } = await supabase
+    .from("entry_sheets")
+    .select("*", {
+      count: "exact",
+      head: true,
+    })
+    .eq("company_id", companyId);
+
+  if (error) throw error;
+
+  return count ?? 0;
+}

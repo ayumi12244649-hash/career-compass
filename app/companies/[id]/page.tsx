@@ -15,7 +15,8 @@ import AIMemoryCard from "@/app/components/AIMemoryCard";
 import GrowthHistoryChart
   from "@/app/components/GrowthHistoryChart";
 import ESCard from "@/app/components/ESCard";
-
+import ActionPlanCard
+  from "@/app/components/ActionPlanCard";
 import InterviewPracticeCard from "@/app/components/InterviewPracticeCard";
 import InterviewPracticeHistory from "@/app/components/InterviewPracticeHistory";
 import RejectionAnalysisCard from "@/app/components/RejectionAnalysisCard";
@@ -167,13 +168,20 @@ console.log("Company user_id:", company.user_id);
   userId={company.user_id}
 />
 
-<ESCard
+
+
+ <ESCard
   companyId={companyId}
 />
 
-        {/* AI Coach */}
-        <AICoachCard />
-        
+<ActionPlanCard
+  companyId={company.id}
+  companyName={company.company_name}
+  userId={company.user_id}
+/>
+
+{/* AI Coach */}
+<AICoachCard />
 
         {/* 面接練習 */}
         <InterviewPracticeCard

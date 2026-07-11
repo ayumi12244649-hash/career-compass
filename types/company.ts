@@ -11,7 +11,13 @@ export interface Company {
 
   created_at: string;
 
-  // 追加
+  memo: string | null;
+
+  // Sprint7
   esCount?: number;
   interviewCount?: number;
+
+  // Sprint7.2
+  updated_at?: string;
+  aiScore?: number;
 }

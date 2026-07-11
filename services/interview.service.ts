@@ -73,3 +73,18 @@ export async function saveInterviewReview(
 
   if (error) throw error;
 }
+export async function fetchInterviewCount(
+  companyId: string
+) {
+  const { count, error } = await supabase
+    .from("interview_notes")
+    .select("*", {
+      count: "exact",
+      head: true,
+    })
+    .eq("company_id", companyId);
+
+  if (error) throw error;
+
+  return count ?? 0;
+}

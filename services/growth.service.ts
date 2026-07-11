@@ -68,67 +68,64 @@ export function calculateGrowthDiff(
 /**
  * 現在の状態をSnapshotとして保存
  */
-export async function saveGrowthSnapshot(
+     export async function saveGrowthSnapshot(
   companyId: string
 ) {
   // ES件数
-  const { count: esCount } =
-    await supabase
-      .from("entry_sheets")
-      .select("*", {
-        count: "exact",
-        head: true,
-      })
-      .eq("company_id", companyId);
+  const { count: esCount } = await supabase
+    .from("entry_sheets")
+    .select("*", {
+      count: "exact",
+      head: true,
+    })
+    .eq("company_id", companyId);
 
   // 面接件数
-  const { count: interviewCount } =
-    await supabase
-      .from("interview_notes")
-      .select("*", {
-        count: "exact",
-        head: true,
-      })
-      .eq("company_id", companyId);
+  const { count: interviewCount } = await supabase
+    .from("interview_notes")
+    .select("*", {
+      count: "exact",
+      head: true,
+    })
+    .eq("company_id", companyId);
 
   // Mission件数
-  const { count: missionCount } =
-    await supabase
-      .from("missions")
-      .select("*", {
-        count: "exact",
-        head: true,
-      })
-      .eq("company_id", companyId);
+  const { count: missionCount } = await supabase
+    .from("missions")
+    .select("*", {
+      count: "exact",
+      head: true,
+    })
+    .eq("company_id", companyId);
 
   // Mentor件数
-  const { count: mentorCount } =
-    await supabase
-      .from("mentor_messages")
-      .select("*", {
-        count: "exact",
-        head: true,
-      })
-      .eq("company_id", companyId);
-
-  const { data, error } = await supabase
-    .from("growth_snapshots")
-    .insert({
-      company_id: companyId,
-      es_count: esCount ?? 0,
-      interview_count: interviewCount ?? 0,
-      mission_count: missionCount ?? 0,
-      mentor_count: mentorCount ?? 0,
+  const { count: mentorCount } = await supabase
+    .from("mentor_messages")
+    .select("*", {
+      count: "exact",
+      head: true,
     })
-    .select();
+    .eq("company_id", companyId);
 
-  console.log("Snapshot Insert:", data);
+    const { error } = await supabase
+  .from("growth_snapshots")
+  .insert({
+    company_id: companyId,
+    es_count: esCount ?? 0,
+    interview_count: interviewCount ?? 0,
+    mission_count: missionCount ?? 0,
+    mentor_count: mentorCount ?? 0,
+  });
 
-  if (error) {
-    console.error("Snapshot Error:", error);
-    throw error;
-  }
+console.log("Snapshot saved");
+
+if (error) {
+  console.error("Snapshot Error:", error);
+  throw error;
 }
+  }
+
+
 /**
  * 成長履歴を取得
  */

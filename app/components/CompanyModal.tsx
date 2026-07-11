@@ -46,8 +46,7 @@ export default function CompanyModal({
       setAppliedDate("");
     }
   }, [open, company]);
-
-  async function saveCompany() {
+    async function saveCompany() {
     if (!companyName.trim()) {
       alert("会社名を入力してください。");
       return;
@@ -65,7 +64,7 @@ export default function CompanyModal({
       return;
     }
 
-    let error;
+    let error: { message: string } | null = null;
 
     if (company) {
       const result = await supabase
@@ -83,19 +82,13 @@ export default function CompanyModal({
     } else {
       const result = await supabase
         .from("companies")
-        const {
-  data: { user },
-} = await supabase.auth.getUser();
-
-await supabase
-  .from("companies")
-  .insert({
-    user_id: user?.id,
-    company_name: companyName,
-    industry: industry,
-    status: status,
-    applied_date: appliedDate,
-  });
+        .insert({
+          user_id: user.id,
+          company_name: companyName,
+          industry,
+          status,
+          applied_date: appliedDate || null,
+        });
 
       error = result.error;
     }
@@ -111,8 +104,7 @@ await supabase
     onSaved();
     onClose();
   }
-
-  if (!open) return null;
+    if (!open) return null;
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -183,9 +175,7 @@ await supabase
           </div>
 
         </div>
-
-        <div className="flex justify-end gap-3 mt-8">
-
+                <div className="flex justify-end gap-3 mt-8">
           <button
             onClick={onClose}
             className="px-5 py-2 rounded-lg bg-gray-300 hover:bg-gray-400"
@@ -200,7 +190,6 @@ await supabase
           >
             {saving ? "保存中..." : "保存"}
           </button>
-
         </div>
 
       </div>

@@ -24,35 +24,44 @@ const reply = await generateMentorReply(
   message
 );
 
-    // Today's Mission保存
-    await saveMissions(
-      companyId,
-      reply
-    );
 
-    // AI Memory更新
-    await updateMemory(
-      companyId
-    );
-await saveGrowthSnapshot(
-  companyId
-);
-    // チャット履歴保存
-    await supabase
-      .from("mentor_messages")
-      .insert([
-        {
-          company_id: companyId,
-          role: "user",
-          message,
-        },
-        {
-          company_id: companyId,
-          role: "assistant",
-          message: reply,
-        },
-      ]);
+try {
+  await saveMissions(companyId, reply);
+} catch (e) {
+  console.error("saveMissions", e);
+}
 
+try {
+  await updateMemory(companyId);
+} catch (e) {
+  console.error("updateMemory", e);
+}
+
+try {
+  await saveGrowthSnapshot(companyId);
+} catch (e) {
+  console.error("saveGrowthSnapshot", e);
+}
+
+try {
+  await supabase
+    .from("mentor_messages")
+    .insert([
+      {
+        company_id: companyId,
+        role: "user",
+        message,
+      },
+      {
+        company_id: companyId,
+        role: "assistant",
+        message: reply,
+      },
+    ]);
+} catch (e) {
+  console.error("mentor_messages", e);
+}
+  
     // JSON部分だけ画面表示から除外
     const cleanReply = reply.replace(
       /\{[\s\S]*"missions"[\s\S]*\}\s*$/,
