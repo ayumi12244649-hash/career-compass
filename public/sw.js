@@ -2,7 +2,7 @@ const CACHE_NAME = "career-compass-v1";
 
 const urlsToCache = [
   "/",
-  "/manifest.json",
+  "/manifest.webmanifest",
   "/icon-192.png",
   "/icon-512.png",
 ];
