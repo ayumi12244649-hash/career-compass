@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import type { Company } from "@/types/company";
-
+import InstallButton from "@/app/components/InstallButton";
 import {
   fetchCompanies,
   deleteCompany,
@@ -148,7 +148,7 @@ export default function CompaniesPage() {
 
     {/* Search */}
     <div className="mb-8 flex flex-col gap-4 md:flex-row">
-
+ <InstallButton />
       <input
         type="text"
         placeholder="🔍 会社名で検索..."

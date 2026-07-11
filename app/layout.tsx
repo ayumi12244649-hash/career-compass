@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
+import SWRegister from "./sw-register";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,9 +19,21 @@ export const metadata: Metadata = {
     default: "Career Compass",
     template: "%s | Career Compass",
   },
+
   description:
     "AIが就職活動をサポートする就活管理アプリ。企業管理・ES管理・面接メモ・AI添削を一つにまとめたキャリア支援ツール。",
+
   applicationName: "Career Compass",
+
+  manifest: "/manifest.json",
+
+  themeColor: "#2563EB",
+
+  icons: {
+    icon: "/icon-192.png",
+    apple: "/icon-192.png",
+  },
+
   keywords: [
     "就活",
     "AI",
@@ -29,13 +42,13 @@ export const metadata: Metadata = {
     "就職活動",
     "Career Compass",
   ],
+
   authors: [
     {
       name: "OKITA LAB",
     },
   ],
 };
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -47,6 +60,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <SWRegister />
         {children}
 
         <Toaster
