@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 
   applicationName: "Career Compass",
 
-  
+  manifest: "/manifest.webmanifest",
 
   themeColor: "#2563EB",
 
