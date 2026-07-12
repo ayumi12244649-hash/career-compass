@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+export default function AIActionPlanCard({
+  companies,
+}: Props) {
 
+  return (
+    <div className="mb-8 rounded-2xl bg-red-500 p-6 text-white text-2xl">
+      AIActionPlanCard 表示成功！
+    </div>
+  );
 type Props = {
   companies: {
     company_name: string;

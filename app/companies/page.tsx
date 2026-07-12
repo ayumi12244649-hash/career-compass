@@ -112,11 +112,13 @@ export default function CompaniesPage() {
         score={82}
       />
     </div>
-<div className="mb-8">
-  <AIActionPlanCard
+<div className="mb-8 rounded-2xl bg-red-500 p-6 text-white text-2xl">
+  CompaniesPageです
+</div>
+
+<AIActionPlanCard
   companies={companies}
 />
-</div>
 
     {/* Dashboard Cards */}
     <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
