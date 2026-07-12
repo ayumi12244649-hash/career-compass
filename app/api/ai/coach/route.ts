@@ -1,8 +1,9 @@
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-
-
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });

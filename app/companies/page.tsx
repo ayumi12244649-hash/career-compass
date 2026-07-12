@@ -18,6 +18,7 @@ import CareerScoreCard from "@/app/components/CareerScoreCard";
 import CompanyCard from "@/app/components/CompanyCard";
 
 export default function CompaniesPage() {
+  console.log("CompaniesPage 最新版");
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
