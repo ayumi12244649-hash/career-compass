@@ -8,7 +8,7 @@ import {
   fetchCompanies,
   deleteCompany,
 } from "@/services/company.service";
-
+import AIActionPlanCard from "@/app/components/AIActionPlanCard";
 import CompanyModal from "@/app/components/CompanyModal";
 import AIIntelligenceDashboard from "@/app/components/AIIntelligenceDashboard";
 import HomeSummaryCard from "@/app/components/HomeSummaryCard";
@@ -112,6 +112,11 @@ export default function CompaniesPage() {
         score={82}
       />
     </div>
+<div className="mb-8">
+  <AIActionPlanCard
+  companies={companies}
+/>
+</div>
 
     {/* Dashboard Cards */}
     <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">

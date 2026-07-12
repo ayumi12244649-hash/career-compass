@@ -1,5 +1,5 @@
 "use client";
-
+import AIActionPlanCard from "../AIActionPlanCard";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AICareerProfileCard from "../AICareerProfileCard";
@@ -266,6 +266,7 @@ async function checkUser() {
 
         {/* 下段 */}
         <div className="grid grid-cols-2 gap-6">
+
 
           <div className="rounded-2xl bg-white p-6 shadow-lg">
 

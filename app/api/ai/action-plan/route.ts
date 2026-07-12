@@ -8,12 +8,16 @@ export async function POST(req: Request) {
 
 
   try {
-    const {
-      company,
-      entrySheets,
-      interviews,
-      analysis,
-    } = await req.json();
+  const {
+  company,
+  entrySheets,
+  interviews,
+  analysis,
+  careerScore,
+  growth,
+  missions,
+  companyStatus,
+} = await req.json();
 
     const prompt = `
 あなたはCareer Compass専属のAI就活メンターです。
@@ -32,9 +36,45 @@ ${interviews}
 【AI分析】
 ${analysis}
 
-ユーザーが今日やるべき行動を5個考えてください。
+あなたはCareer Compass専属AIです。
 
-必ずJSONのみ返してください。
+最優先はユーザーが内定を獲得することです。
+
+次の情報から
+
+・締切
+・選考状況
+・ESの完成度
+・面接予定
+・Career Score
+・成長状況
+
+を分析してください。
+
+重要度の高い順に5件提案してください。
+
+優先順位は
+
+高
+中
+低
+
+のみ使用してください。
+
+due_typeは
+
+今日
+今週
+今月
+
+のみ使用してください。
+
+同じ内容を繰り返さないでください。
+
+ユーザーが今すぐ行動できる内容だけ返してください。
+
+JSON以外は絶対に出力しないでください。
+Markdownも説明文も不要です。
 
 
 {
@@ -64,7 +104,9 @@ ${analysis}
       "priority": "高",
       "due_type": "今日"
     }
-  ]
+  ],
+  "summary": "今日はES提出を最優先にしてください。",
+  "motivation": "一歩ずつ進めば内定に近づきます！"
 }
 
 priorityは必ず
@@ -118,6 +160,7 @@ due_typeは必ず
 
 
     const result = JSON.parse(text);
+console.log(text);
 
     return NextResponse.json(result);
   } catch (error) {
