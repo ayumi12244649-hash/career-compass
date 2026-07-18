@@ -1,7 +1,10 @@
 "use client";
 
+import Loading from "@/app/components/common/Loading";
+import ErrorMessage from "@/app/components/common/ErrorMessage";
+import AITodayDashboardContainer from "@/app/components/ai/AITodayDashboardContainer";
 import { useEffect, useState } from "react";
-
+import AITodayDashboardPreview from "@/app/components/ai/AITodayDashboardPreview";
 import type { Company } from "@/types/company";
 import InstallButton from "@/app/components/InstallButton";
 import {
@@ -16,11 +19,14 @@ import DailyMissionCard from "@/app/components/DailyMissionCard";
 import AICoachCard from "@/app/components/AICoachCard";
 import CareerScoreCard from "@/app/components/CareerScoreCard";
 import CompanyCard from "@/app/components/CompanyCard";
-
+import { getTargetCompany } from "@/services/ai-target-company.service";
+import { fetchAIData } from "@/services/ai-data.service";
 export default function CompaniesPage() {
-  console.log("CompaniesPage 最新版");
+  
   const [companies, setCompanies] = useState<Company[]>([]);
+  const [aiData, setAIData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
 
   const [search, setSearch] = useState("");
@@ -28,24 +34,39 @@ export default function CompaniesPage() {
   const [industryFilter, setIndustryFilter] = useState("すべて");
 
   useEffect(() => {
-    loadCompanies();
-  }, []);
+  loadCompanies();
+}, []);
 
-  async function loadCompanies() {
-    try {
-      setLoading(true);
-
-      const data = await fetchCompanies();
-      setCompanies(data);
-
-    } catch (error) {
-      console.error(error);
-      alert("企業一覧の取得に失敗しました。");
-
-    } finally {
-      setLoading(false);
-    }
+async function loadAIData(companyId: string) {
+  try {
+    const data = await fetchAIData(companyId);
+    setAIData(data);
+  } catch (error) {
+    console.error(error);
   }
+}
+
+async function loadCompanies() {
+  try {
+    setLoading(true);
+    setError("");
+
+    const data = await fetchCompanies();
+
+    setCompanies(data);
+
+    const target = getTargetCompany(data);
+
+    if (target) {
+      await loadAIData(target.id);
+    }
+  } catch (error) {
+    console.error(error);
+    setError("企業一覧の取得に失敗しました。");
+  } finally {
+    setLoading(false);
+  }
+}
 
   async function handleDelete(id: string) {
 
@@ -59,74 +80,84 @@ export default function CompaniesPage() {
       await loadCompanies();
 
     } catch (error) {
+  console.error(error);
 
-      console.error(error);
-      alert("削除に失敗しました。");
-
-    }
+  setError("企業の削除に失敗しました。");
+}
 
   }
+const industries = [
+  "すべて",
+  ...new Set(
+    companies
+      .map((company) => company.industry)
+      .filter(
+        (industry): industry is string =>
+          Boolean(industry)
+      )
+  ),
+];
 
-  const industries = [
-    "すべて",
-    ...new Set(
-      companies
-        .map((company) => company.industry)
-        .filter(Boolean)
-    ),
-  ];
+const filteredCompanies = companies
+  .filter((company) =>
+    company.company_name
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  )
+  .filter((company) =>
+    statusFilter === "すべて"
+      ? true
+      : company.status === statusFilter
+  )
+  .filter((company) =>
+    industryFilter === "すべて"
+      ? true
+      : company.industry === industryFilter
+  );
 
-  const filteredCompanies = companies
-    .filter((company) =>
-      company.company_name
-        .toLowerCase()
-        .includes(search.toLowerCase())
-    )
-    .filter((company) =>
-      statusFilter === "すべて"
-        ? true
-        : company.status === statusFilter
-    )
-    .filter((company) =>
-      industryFilter === "すべて"
-        ? true
-        : company.industry === industryFilter
-    );
-
+const targetCompany = getTargetCompany(companies);
+  
   return (
     <main className="min-h-screen bg-slate-100 p-8">
   <div className="mx-auto max-w-7xl">
 
     {/* AI Intelligence Dashboard */}
-    <div className="mb-8">
-      <AIIntelligenceDashboard
-        userId={companies[0]?.user_id ?? ""}
-      />
-    </div>
+   {targetCompany && (
+  <div className="mb-8">
+    <AIIntelligenceDashboard
+      userId={targetCompany.user_id}
+    />
+  </div>
+)}
 
     {/* Summary */}
     <div className="mb-8">
-      <HomeSummaryCard
-        companyCount={companies.length}
-        esCount={0}
-        interviewCount={0}
-        score={82}
-      />
+  <HomeSummaryCard
+  companyCount={companies.length}
+  esCount={0}
+  interviewCount={0}
+  score={0}
+/>
     </div>
-<div className="mb-8 rounded-2xl bg-red-500 p-6 text-white text-2xl">
-  CompaniesPageです
-</div>
 
 <AIActionPlanCard
   companies={companies}
+  aiData={aiData}
 />
+<div className="mt-8">
+  <AITodayDashboardContainer
+    aiData={aiData}
+  />
+</div>
 
     {/* Dashboard Cards */}
-    <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+    <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">  
 
-      <DailyMissionCard
-        companyId={companies[0]?.id ?? ""}
-      />
+      {targetCompany && (
+  <DailyMissionCard
+    companyId={targetCompany.id}
+  />
+)}
 
       <AICoachCard />
 
@@ -197,45 +228,43 @@ export default function CompaniesPage() {
       </select>
 
     </div>
-        {/* Company Cards */}
+       
+  {/* Company Cards */}
 
-    {loading ? (
+{error ? (
+  <div className="mb-8">
+    <ErrorMessage
+      message={error}
+      onRetry={loadCompanies}
+    />
+  </div>
+) : loading ? (
+  <Loading
+    message="企業一覧を読み込んでいます..."
+  />
+) : filteredCompanies.length === 0 ? (
+  <div className="rounded-xl bg-white p-10 text-center shadow">
+    <h2 className="mb-2 text-xl font-bold">
+      該当する企業がありません
+    </h2>
 
-      <div className="rounded-xl bg-white p-10 text-center shadow">
-        <p className="text-slate-500">
-          読み込み中...
-        </p>
-      </div>
+    <p className="text-slate-500">
+      検索条件を変更するか、
+      新しい企業を追加してください。
+    </p>
+  </div>
+) : (
+  <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+    {filteredCompanies.map((company) => (
+      <CompanyCard
+        key={company.id}
+        company={company}
+        onDelete={handleDelete}
+      />
+    ))}
+  </div>
+)}
 
-    ) : filteredCompanies.length === 0 ? (
-
-      <div className="rounded-xl bg-white p-10 text-center shadow">
-        <h2 className="mb-2 text-xl font-bold">
-          該当する企業がありません
-        </h2>
-
-        <p className="text-slate-500">
-          検索条件を変更するか、新しい企業を追加してください。
-        </p>
-      </div>
-
-    ) : (
-
-      <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-
-        {filteredCompanies.map((company) => (
-
-          <CompanyCard
-            key={company.id}
-            company={company}
-            onDelete={handleDelete}
-          />
-
-        ))}
-
-      </div>
-
-    )}
         {/* Company Modal */}
     {open && (
       <CompanyModal

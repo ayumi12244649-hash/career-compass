@@ -1,6 +1,6 @@
 "use client";
-import DailyReportCard
-  from "@/app/components/DailyReportCard";
+import CompanyResearchCard from "@/app/components/CompanyResearchCard";
+import DailyReportCard from "@/app/components/DailyReportCard";
 import BadgeCard
   from "@/app/components/BadgeCard";
 import { useEffect, useState } from "react";
@@ -8,6 +8,8 @@ import { useParams } from "next/navigation";
 import GrowthDashboardCard from "@/app/components/GrowthDashboardCard";
 import type { Company } from "@/types/company";
 import { fetchCompany } from "@/services/company.service";
+import { fetchEntrySheets } from "@/services/es.service";
+import { fetchInterviewNotes } from "@/services/interview.service";
 import MissionCard from "@/app/components/MissionCard";
 import AIDashboardCard from "@/app/components/AIDashboardCard";
 import AICoachCard from "@/app/components/AICoachCard";
@@ -29,7 +31,13 @@ import CompanyComparisonCard
   from "@/app/components/CompanyComparisonCard";
   import AIIntelligenceDashboard
   from "@/app/components/AIIntelligenceDashboard";
-
+import AIFailureAnalysisCard
+  from "@/app/components/AIFailureAnalysisCard";
+  import { fetchLatestCareerScore } from "@/services/score.service";
+  import FailureAnalysisHistoryCard
+  from "@/app/components/FailureAnalysisHistoryCard";
+  import FailureAnalysisCompareCard
+  from "@/app/components/FailureAnalysisCompareCard";
 export default function CompanyDetailPage() {
   const params = useParams();
 
@@ -40,7 +48,17 @@ export default function CompanyDetailPage() {
 
   const [loading, setLoading] =
     useState(true);
+const [entrySheets, setEntrySheets] =
+  useState<any[]>([]);
 
+const [interviews, setInterviews] =
+  useState<any[]>([]);
+
+const [careerScore, setCareerScore] =
+  useState<any>(null);
+
+const [analysis, setAnalysis] =
+  useState<any>(null);
   useEffect(() => {
     loadCompany();
   }, [companyId]);
@@ -52,6 +70,17 @@ export default function CompanyDetailPage() {
     console.log("Fetched Company:", data);
 
     setCompany(data);
+    const esData = await fetchEntrySheets(companyId);
+
+setEntrySheets(esData);
+const interviewData =
+  await fetchInterviewNotes(companyId);
+
+setInterviews(interviewData);
+const scoreData =
+  await fetchLatestCareerScore();
+
+setCareerScore(scoreData);
   } catch (error) {
     console.error(error);
   } finally {
@@ -160,6 +189,10 @@ console.log("Company user_id:", company.user_id);
   companyId={company.id}
 />
 
+<CompanyResearchCard
+  companyId={company.id}
+/>
+
 <CompanyComparisonCard
   userId={company.user_id}
 />
@@ -209,7 +242,21 @@ console.log("Company user_id:", company.user_id);
           companyId={company.id}
           companyName={company.company_name}
         />
+<AIFailureAnalysisCard
+  company={company}
+  entrySheets={entrySheets}
+  interviews={interviews}
+  careerScore={careerScore}
+  analysis={analysis}
+/>
 
+<FailureAnalysisHistoryCard
+  companyId={company.id}
+/>
+
+<FailureAnalysisCompareCard
+  companyId={company.id}
+/>
       </div>
     </main>
   );

@@ -34,3 +34,19 @@ export async function generateActionPlan(
 
   return data.plans;
 }
+import { supabase } from "@/lib/supabase";
+
+export async function fetchActionPlans(
+  companyId: string
+) {
+  const { data, error } = await supabase
+    .from("action_plans")
+    .select("*")
+    .eq("company_id", companyId)
+    .eq("completed", false)
+    .order("created_at");
+
+  if (error) throw error;
+
+  return data ?? [];
+}
