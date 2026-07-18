@@ -1,5 +1,9 @@
 "use client";
 
+import Dialog from "@/app/components/common/Dialog";
+import Toast from "@/app/components/common/Toast";
+import Button from "@/app/components/common/Button";
+import EmptyState from "@/app/components/common/EmptyState";
 import Loading from "@/app/components/common/Loading";
 import ErrorMessage from "@/app/components/common/ErrorMessage";
 import AITodayDashboardContainer from "@/app/components/ai/AITodayDashboardContainer";
@@ -28,6 +32,11 @@ export default function CompaniesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
+const [toast, setToast] = useState<{
+  message: string;
+  type: "success" | "error";
+} | null>(null);
+const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("すべて");
@@ -36,6 +45,15 @@ export default function CompaniesPage() {
   useEffect(() => {
   loadCompanies();
 }, []);
+useEffect(() => {
+  if (!toast) return;
+
+  const timer = setTimeout(() => {
+    setToast(null);
+  }, 3000);
+
+  return () => clearTimeout(timer);
+}, [toast]);
 
 async function loadAIData(companyId: string) {
   try {
@@ -70,21 +88,30 @@ async function loadCompanies() {
 
   async function handleDelete(id: string) {
 
-    const ok = confirm("この企業を削除しますか？");
-
-    if (!ok) return;
+   async function handleDelete(id: string) {
+  setDeleteTargetId(id);
+}
 
     try {
 
       await deleteCompany(id);
-      await loadCompanies();
+await loadCompanies();
+
+setToast({
+  message: "企業を削除しました",
+  type: "success",
+});
+
 
     } catch (error) {
   console.error(error);
 
-  setError("企業の削除に失敗しました。");
-}
-
+  
+}setError("企業の削除に失敗しました。");
+setToast({
+  message: "企業の削除に失敗しました",
+  type: "error",
+});
   }
 const industries = [
   "すべて",
@@ -120,6 +147,13 @@ const targetCompany = getTargetCompany(companies);
   return (
     <main className="min-h-screen bg-slate-100 p-8">
   <div className="mx-auto max-w-7xl">
+
+{toast && (
+  <Toast
+    message={toast.message}
+    type={toast.type}
+  />
+)}
 
     {/* AI Intelligence Dashboard */}
    {targetCompany && (
@@ -176,13 +210,12 @@ const targetCompany = getTargetCompany(companies);
         🏢 応募企業一覧
       </h1>
 
-      <button
-        onClick={() => setOpen(true)}
-        className="rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700"
-      >
-        ＋ 企業追加
-      </button>
-
+      <Button
+  variant="primary"
+  onClick={() => setOpen(true)}
+>
+  ＋企業追加
+</Button>
     </div>
 
     {/* Search */}
@@ -243,16 +276,13 @@ const targetCompany = getTargetCompany(companies);
     message="企業一覧を読み込んでいます..."
   />
 ) : filteredCompanies.length === 0 ? (
-  <div className="rounded-xl bg-white p-10 text-center shadow">
-    <h2 className="mb-2 text-xl font-bold">
-      該当する企業がありません
-    </h2>
+  <EmptyState
+  title="該当する企業がありません"
+  description="検索条件を変更するか、新しい企業を追加してください。"
+  buttonText="企業を追加"
+  onClick={() => setOpen(true)}
+/>
 
-    <p className="text-slate-500">
-      検索条件を変更するか、
-      新しい企業を追加してください。
-    </p>
-  </div>
 ) : (
   <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
     {filteredCompanies.map((company) => (
@@ -264,6 +294,36 @@ const targetCompany = getTargetCompany(companies);
     ))}
   </div>
 )}
+<Dialog
+  open={deleteTargetId !== null}
+  title="企業を削除しますか？"
+  message="この操作は取り消せません。"
+  onCancel={() => setDeleteTargetId(null)}
+  onConfirm={async () => {
+  if (!deleteTargetId) return;
+
+  try {
+    await deleteCompany(deleteTargetId);
+    await loadCompanies();
+
+    setToast({
+      message: "企業を削除しました",
+      type: "success",
+    });
+  } catch (error) {
+    console.error(error);
+
+    setError("企業の削除に失敗しました。");
+
+    setToast({
+      message: "企業の削除に失敗しました",
+      type: "error",
+    });
+  } finally {
+    setDeleteTargetId(null);
+  }
+}}
+/>
 
         {/* Company Modal */}
     {open && (
