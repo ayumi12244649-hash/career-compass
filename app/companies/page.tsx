@@ -1,5 +1,8 @@
 "use client";
 
+import { fetchLatestCareerScore } from "@/services/score.service";
+import { fetchEntrySheetCount } from "@/services/es.service";
+import { fetchInterviewCount } from "@/services/interview.service";
 import Dialog from "@/app/components/common/Dialog";
 import Toast from "@/app/components/common/Toast";
 import Button from "@/app/components/common/Button";
@@ -37,7 +40,9 @@ const [toast, setToast] = useState<{
   type: "success" | "error";
 } | null>(null);
 const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
-
+const [esCount, setEsCount] = useState(0);
+const [interviewCount, setInterviewCount] = useState(0);
+const [careerScore, setCareerScore] = useState(0);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("すべて");
   const [industryFilter, setIndustryFilter] = useState("すべて");
@@ -76,8 +81,18 @@ async function loadCompanies() {
     const target = getTargetCompany(data);
 
     if (target) {
-      await loadAIData(target.id);
-    }
+  await loadAIData(target.id);
+
+  const es = await fetchEntrySheetCount(target.id);
+  const interviews = await fetchInterviewCount(target.id);
+
+  setEsCount(es);
+  setInterviewCount(interviews);
+  const latestScore = await fetchLatestCareerScore();
+
+setCareerScore(latestScore?.score ?? 0);
+}
+
   } catch (error) {
     console.error(error);
     setError("企業一覧の取得に失敗しました。");
@@ -168,9 +183,9 @@ const targetCompany = getTargetCompany(companies);
     <div className="mb-8">
   <HomeSummaryCard
   companyCount={companies.length}
-  esCount={0}
-  interviewCount={0}
-  score={0}
+  esCount={esCount}
+  interviewCount={interviewCount}
+ score={careerScore}
 />
     </div>
 
